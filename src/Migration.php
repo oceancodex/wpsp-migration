@@ -11,13 +11,12 @@ use Doctrine\Migrations\Tools\Console\Command;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\ORMSetup;
+use Filesystem;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use WPSPCORE\Base\BaseInstances;
-use WPSPCORE\Filesystem\Filesystem;
 use WPSPCORE\Listeners\MigrationListener;
-use WPSPCORE\Migration\TablePrefix;
 
 class Migration extends BaseInstances {
 
