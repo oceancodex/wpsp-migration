@@ -11,7 +11,7 @@ use Doctrine\Migrations\Tools\Console\Command;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\ORMSetup;
-use Filesystem;
+use WPSPCORE\FileSystem\FileSystem;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -102,10 +102,10 @@ class Migration extends BaseInstances {
 //				]);
 //				$output = new BufferedOutput();
 //				$this->cli()->doRun($input, $output);
-				$exists = Filesystem::exists($lastMigrateVersionPathInFolder);
+				$exists = FileSystem::exists($lastMigrateVersionPathInFolder);
 				if ($exists) {
 					try {
-						Filesystem::delete($lastMigrateVersionPathInFolder);
+						FileSystem::delete($lastMigrateVersionPathInFolder);
 						$result = ['success' => true, 'message' => 'Repaired database successfully! [Deleted: ' . $lastMigrateVersionNameInFolder . ']', 'data' => null];
 					}
 					catch (\Exception $exception) {
@@ -212,7 +212,7 @@ class Migration extends BaseInstances {
 				$migrationVersion     = preg_replace('/^(.*?)migrations\/(.*?)/iu', '$2', $this->funcs->_trailingslash($migrationVersion));
 				$migrationVersionPath = $this->funcs->_trailingslash($this->funcs->_getMigrationPath() . '/' . $migrationVersion . '.php');
 //			    $migrationVersionPathFromPluginDir = _getPathFromDir('plugins', $migrationVersionPath) . '.php';
-				$deletedMigrations[] = Filesystem::delete($migrationVersionPath);
+				$deletedMigrations[] = FileSystem::delete($migrationVersionPath);
 			}
 		}
 		return $this->funcs->_response(true, $deletedMigrations, 'Deleted all migrations successfully!', 200);
@@ -262,7 +262,7 @@ class Migration extends BaseInstances {
 		// Get all table names from "createTable" statements in migration files.
 		$databaseTableMigrations = $this->funcs->_getAllFilesInFolder($this->funcs->_getMigrationPath());
 		foreach ($databaseTableMigrations as $databaseTableMigration) {
-			$fileContent    = Filesystem::instance()->get($databaseTableMigration['real_path']);
+			$fileContent    = FileSystem::get($databaseTableMigration['real_path']);
 			$newFileContent = '';
 			$tokens         = token_get_all($fileContent);
 			foreach ($tokens as $token) {
