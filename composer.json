@@ -1,0 +1,44 @@
+{
+	"name": "oceancodex/wpsp-migration",
+	"version": "8.2.0",
+	"description": "WordPress Starter Plugin - Migration",
+	"keywords": [
+	],
+	"license": "MIT",
+	"require": {
+		"php": "^8.2",
+		"doctrine/doctrine-migrations-bundle": "^3.3.1",
+		"doctrine/orm": "^3.2.1",
+		"gedmo/doctrine-extensions": "^v3.16.1",
+		"oceancodex/wpsp-core": "^8.2.0"
+	},
+	"config": {
+		"sort-packages": true
+	},
+	"autoload": {
+		"psr-4": {
+			"WPSPCORE\\Migration\\": "src/"
+		},
+		"files": [
+		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"WPSPCORE\\Migration\\Tests\\": "tests/"
+		}
+	},
+	"authors": [
+		{
+			"name": "OceanCodex",
+			"email": "contact@oceancodex.com"
+		}
+	],
+	"scripts": {
+		"post-autoload-dump": [
+		],
+		"post-root-package-install": [
+		],
+		"post-create-project-cmd": [
+		]
+	}
+}
