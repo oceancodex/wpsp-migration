@@ -244,8 +244,8 @@ class Migration extends BaseInstances {
 				try {
 					$joinTables = $this->getEntityManager()->getClassMetadata($databaseTableClass)->getAssociationMappings();
 					foreach ($joinTables as $joinTable) {
-						if (!empty($joinTable?->joinTable?->name)) {
-							$joinTableName = $joinTable?->joinTable?->name ?? null;
+						if (isset($joinTable['joinTable']['name'])) {
+							$joinTableName = $joinTable['joinTable']['name'];
 							if ($joinTableName) {
 								$joinTableName           = preg_replace('/^' . $this->funcs->_getDBTablePrefix() . '/iu', '', $joinTableName);
 								$definedDatabaseTables[] = $joinTableName;
