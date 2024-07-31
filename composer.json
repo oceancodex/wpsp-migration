@@ -1,14 +1,15 @@
 {
 	"name": "oceancodex/wpsp-migration",
-	"version": "8.0.0",
+	"version": "7.4.0",
 	"description": "WordPress Starter Plugin - Migration",
 	"keywords": [
 	],
 	"license": "MIT",
 	"require": {
-		"php": "^8.0",
+		"php": "^7.4",
+		"doctrine/annotations": "^2.0.1",
 		"doctrine/doctrine-migrations-bundle": "^3.3.1",
-		"oceancodex/wpsp-core": "^8.0.0"
+		"oceancodex/wpsp-core": "^7.4.0"
 	},
 	"config": {
 		"sort-packages": true

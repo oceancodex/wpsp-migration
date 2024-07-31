@@ -168,7 +168,7 @@ class Migration extends BaseInstances {
 			$eventManager->addEventListener(Events::loadClassMetadata, $tablePrefix);
 			$eventManager->addEventSubscriber(new MigrationListener());
 
-			$ormConfig  = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
+			$ormConfig  = ORMSetup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 			$connection = DriverManager::getConnection($connectionParams);
 
 			$this->entityManager = new EntityManager($connection, $ormConfig, $eventManager);
