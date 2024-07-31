@@ -9,6 +9,8 @@
 		"php": "^7.4",
 		"doctrine/annotations": "^2.0.1",
 		"doctrine/doctrine-migrations-bundle": "^3.3.1",
+		"doctrine/orm": "^2.19.6",
+		"gedmo/doctrine-extensions": "^v3.16.1",
 		"oceancodex/wpsp-core": "^7.4.0"
 	},
 	"config": {
