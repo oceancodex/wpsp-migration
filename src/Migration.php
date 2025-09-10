@@ -128,6 +128,16 @@ class Migration extends BaseInstances {
 
 	public function migrate(): array {
 		try {
+			if (!defined('STDIN')) {
+				define('STDIN', fopen('php://memory', 'r'));
+			}
+			if (!defined('STDOUT')) {
+				define('STDOUT', fopen('php://output', 'w'));
+			}
+			if (!defined('STDERR')) {
+				define('STDERR', fopen('php://output', 'w'));
+			}
+
 			$input  = new ArrayInput([
 				'command'          => 'migrate',
 				'--no-interaction' => true,
