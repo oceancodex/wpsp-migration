@@ -8,8 +8,8 @@
 	"require": {
 		"php": "^8.4",
 		"doctrine/doctrine-migrations-bundle": "^3.4.2",
-		"oceancodex/wpsp-core": "^8.3.0",
-		"oceancodex/wpsp-orm": "^8.3.0"
+		"oceancodex/wpsp-core": "^8.4.0",
+		"oceancodex/wpsp-orm": "^8.4.0"
 	},
 	"config": {
 		"sort-packages": true
