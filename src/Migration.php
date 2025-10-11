@@ -20,15 +20,18 @@ use WPSPCORE\Listeners\MigrationListener;
 
 class Migration extends BaseInstances {
 
-	private ?EntityManager     $entityManager     = null;
-	private ?DependencyFactory $dependencyFactory = null;
-	private ?Application       $cli               = null;
+	/** @var EntityManager|null */
+	private $entityManager     = null;
+	/** @var DependencyFactory|null */
+	private $dependencyFactory = null;
+	/** @var Application|null */
+	private $cli               = null;
 
 	/*
 	 *
 	 */
 
-	public function afterConstruct(): void {
+	public function afterConstruct() {
 		if (!$this->cli) {
 			$this->cli = new Application($this->funcs->_config('app.short_name'));
 			$this->cli->setCatchExceptions(true);
@@ -52,7 +55,7 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function global(): void {
+	public function global() {
 		$globalMigration = $this->funcs->_getAppShortName();
 		$globalMigration = $globalMigration . '_migration';
 		global ${$globalMigration};
@@ -63,7 +66,10 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function cli(): ?Application {
+	/**
+	 * @return Application|null
+	 */
+	public function cli() {
 		return $this->cli;
 	}
 
@@ -71,7 +77,7 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function diff(): array {
+	public function diff() {
 		try {
 			$input  = new ArrayInput([
 				'command'             => 'diff',
@@ -87,7 +93,7 @@ class Migration extends BaseInstances {
 		}
 	}
 
-	public function repair(): array {
+	public function repair() {
 		$lastMigratedVersion            = $this->getDependencyFactory()->getVersionAliasResolver()->resolveVersionAlias('current')->__toString();
 		$lastMigrateVersionInFolder     = $this->getDependencyFactory()->getVersionAliasResolver()->resolveVersionAlias('latest')->__toString();
 		$lastMigrateVersionNameInFolder = preg_replace('/^(.*?)migrations\\\(.*?)$/iu', '$2', $lastMigrateVersionInFolder);
@@ -126,7 +132,7 @@ class Migration extends BaseInstances {
 		return $result;
 	}
 
-	public function migrate(): array {
+	public function migrate() {
 		try {
 			if (!defined('STDIN')) {
 				define('STDIN', fopen('php://memory', 'r'));
@@ -167,7 +173,10 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function getEntityManager(): EntityManager {
+	/**
+	 * @return EntityManager
+	 */
+	public function getEntityManager() {
 		if (!$this->entityManager) {
 			$paths            = [$this->funcs->_getAppPath() . '/Entities'];
 			$isDevMode        = $this->funcs->_config('app.env') == 'dev' || $this->funcs->_config('app.env') == 'local';
@@ -186,7 +195,10 @@ class Migration extends BaseInstances {
 		return $this->entityManager;
 	}
 
-	public function getDependencyFactory(): DependencyFactory {
+	/**
+	 * @return DependencyFactory
+	 */
+	public function getDependencyFactory() {
 		if (!$this->dependencyFactory) {
 			$config                  = new PhpFile($this->funcs->_getConfigPath() . '/migrations.php');
 			$existingEntityManager   = new ExistingEntityManager($this->getEntityManager());
@@ -199,7 +211,7 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function syncMetadata(): array {
+	public function syncMetadata() {
 		try {
 			$input  = new ArrayInput([
 				'command'          => 'sync-metadata-storage',
@@ -214,7 +226,7 @@ class Migration extends BaseInstances {
 		}
 	}
 
-	public function deleteAllMigrations(): array {
+	public function deleteAllMigrations() {
 		$allMigrations     = $this->getDependencyFactory()->getMigrationsFinder()->findMigrations($this->funcs->_trailingslashit($this->funcs->_getMigrationPath()));
 		$deletedMigrations = [];
 		foreach ($allMigrations as $migrationVersion) {
@@ -228,7 +240,7 @@ class Migration extends BaseInstances {
 		return $this->funcs->_response(true, $deletedMigrations, 'Deleted all migrations successfully!', 200);
 	}
 
-	public function getDefinedDatabaseTables(): array {
+	public function getDefinedDatabaseTables() {
 		$databaseTableClasses = $this->funcs->_getAllClassesInDir($this->rootNamespace . '\app\Entities', $this->funcs->_getAppPath() . '/Entities');
 		$databaseTableClasses = array_merge($databaseTableClasses, [$this->funcs->_getDBTableName('migration_versions')]);
 
@@ -311,7 +323,7 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function checkDatabaseVersion(): ?array {
+	public function checkDatabaseVersion() {
 		$databaseIsValid = $this->checkDatabaseVersionNewest();
 		if ($databaseIsValid['result']) {
 			$databaseIsValid = $this->checkMigrationFolderNotEmpty();
@@ -322,7 +334,7 @@ class Migration extends BaseInstances {
 		return $databaseIsValid;
 	}
 
-	public function checkDatabaseVersionNewest(): array {
+	public function checkDatabaseVersionNewest() {
 		$databaseVersionIsNewest       = true;
 		$lastMigrateVersionInFolder    = $this->getDependencyFactory()->getVersionAliasResolver()->resolveVersionAlias('latest')->__toString();
 		$lastMigratedVersionInDatabase = $this->getDependencyFactory()->getVersionAliasResolver()->resolveVersionAlias('current')->__toString();
@@ -332,12 +344,12 @@ class Migration extends BaseInstances {
 		return ['result' => $databaseVersionIsNewest, 'type' => 'check_database_version_newest'];
 	}
 
-	public function checkMigrationFolderNotEmpty(): array {
+	public function checkMigrationFolderNotEmpty() {
 		$migrationCounts = $this->getDependencyFactory()->getMigrationRepository()->getMigrations()->count();
 		return ['result' => $migrationCounts, 'type' => 'check_migration_folder_not_empty'];
 	}
 
-	public function checkAllDatabaseTableExists(): array {
+	public function checkAllDatabaseTableExists() {
 		$definedDatabaseTables   = $this->getDefinedDatabaseTables();
 		$allDatabaseTablesExists = true;
 		foreach ($definedDatabaseTables as $definedDatabaseTable) {
