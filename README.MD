@@ -1,1 +1,1 @@
-# WordPress Starter Plugin - MongoDB
+# WordPress Starter Plugin - Migration
