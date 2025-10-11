@@ -6,13 +6,17 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 class TablePrefix {
 
-	protected string $prefix = '';
+	protected $prefix = '';
 
 	public function __construct($prefix) {
 		$this->prefix = (string)$prefix;
 	}
 
-	public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void {
+	/**
+	 * @param LoadClassMetadataEventArgs $eventArgs
+	 *
+	 */
+	public function loadClassMetadata($eventArgs) {
 		$classMetadata = $eventArgs->getClassMetadata();
 
 		if (!$classMetadata->isInheritanceTypeSingleTable() || $classMetadata->getName() === $classMetadata->rootEntityName) {
