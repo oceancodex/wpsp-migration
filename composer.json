@@ -7,9 +7,8 @@
 	"license": "MIT",
 	"require": {
 		"php": "^8.3",
-		"doctrine/doctrine-migrations-bundle": "^3.4.2",
-		"oceancodex/wpsp-core": "^8.3.0",
-		"oceancodex/wpsp-orm": "^8.3.0"
+		"oceancodex/wpsp-orm": "^8.4.0",
+		"doctrine/doctrine-migrations-bundle": "^3.5.0"
 	},
 	"config": {
 		"sort-packages": true

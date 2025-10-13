@@ -31,7 +31,7 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
-	public function afterConstruct() {
+	protected function afterConstruct() {
 		if (!$this->cli) {
 			$this->cli = new Application($this->funcs->_config('app.short_name'));
 			$this->cli->setCatchExceptions(true);
