@@ -18,20 +18,22 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use WPSPCORE\Base\BaseInstances;
 use WPSPCORE\Listeners\MigrationListener;
 
+/**
+ * @property \Doctrine\ORM\EntityManager            $entityManager
+ * @property \Doctrine\Migrations\DependencyFactory $dependencyFactory
+ * @property \Symfony\Component\Console\Application $cli
+ */
 class Migration extends BaseInstances {
 
-	/** @var EntityManager|null */
 	private $entityManager     = null;
-	/** @var DependencyFactory|null */
 	private $dependencyFactory = null;
-	/** @var Application|null */
 	private $cli               = null;
 
 	/*
 	 *
 	 */
 
-	protected function afterConstruct() {
+	public function afterConstruct() {
 		if (!$this->cli) {
 			$this->cli = new Application($this->funcs->_config('app.short_name'));
 			$this->cli->setCatchExceptions(true);
@@ -67,6 +69,7 @@ class Migration extends BaseInstances {
 	 */
 
 	/**
+	 * Get CLI instance.
 	 * @return Application|null
 	 */
 	public function cli() {
@@ -174,6 +177,7 @@ class Migration extends BaseInstances {
 	 */
 
 	/**
+	 * Get EntityManager instance.
 	 * @return EntityManager
 	 */
 	public function getEntityManager() {
@@ -196,6 +200,7 @@ class Migration extends BaseInstances {
 	}
 
 	/**
+	 * Get DependencyFactory instance.
 	 * @return DependencyFactory
 	 */
 	public function getDependencyFactory() {
