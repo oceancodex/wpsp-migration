@@ -91,7 +91,7 @@ class Migration extends BaseInstances {
 			$this->cli()->doRun($input, $output);
 			return ['success' => true, 'message' => 'Generate new database migration successfully!', 'data' => ['output' => $output->fetch()]];
 		}
-		catch (\Exception|\Throwable $e) {
+		catch (\Exception $e) {
 			return ['success' => false, 'data' => null, 'message' => $e->getMessage()];
 		}
 	}
@@ -167,7 +167,7 @@ class Migration extends BaseInstances {
 				return ['success' => false, 'data' => ['output' => $outputMessage], 'message' => $outputMessage];
 			}
 		}
-		catch (\Exception|\Throwable $e) {
+		catch (\Exception $e) {
 			return ['success' => false, 'message' => $e->getMessage(), 'data' => null];
 		}
 	}
@@ -226,7 +226,7 @@ class Migration extends BaseInstances {
 			$this->cli()->doRun($input, $output);
 			return ['success' => true, 'message' => 'Sync metadata successfully!', 'data' => $output->fetch()];
 		}
-		catch (\Exception|\Throwable $e) {
+		catch (\Exception $e) {
 			return ['success' => false, 'message' => $e->getMessage(), 'data' => null];
 		}
 	}
