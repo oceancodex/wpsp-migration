@@ -91,7 +91,7 @@ class Migration extends BaseInstances {
 			$this->cli()->doRun($input, $output);
 			return ['success' => true, 'message' => 'Generate new database migration successfully!', 'data' => ['output' => $output->fetch()]];
 		}
-		catch (\Exception|\Throwable $e) {
+		catch (\Throwable $e) {
 			return ['success' => false, 'data' => null, 'message' => $e->getMessage()];
 		}
 	}
@@ -117,7 +117,7 @@ class Migration extends BaseInstances {
 						FileSystem::delete($lastMigrateVersionPathInFolder);
 						$result = ['success' => true, 'message' => 'Repaired database successfully! [Deleted: ' . $lastMigrateVersionNameInFolder . ']', 'data' => null];
 					}
-					catch (\Exception $exception) {
+					catch (\Throwable $exception) {
 						$result = ['success' => false, 'message' => $exception->getMessage(), 'data' => null];
 					}
 				}
@@ -125,7 +125,7 @@ class Migration extends BaseInstances {
 					$result = ['success' => false, 'message' => 'Last migrate version in folder not exists!', 'data' => null];
 				}
 			}
-			catch (\Exception $e) {
+			catch (\Throwable $e) {
 				$result = ['success' => false, 'message' => $e->getMessage(), 'data' => null];
 			}
 		}
@@ -167,7 +167,7 @@ class Migration extends BaseInstances {
 				return ['success' => false, 'data' => ['output' => $outputMessage], 'message' => $outputMessage];
 			}
 		}
-		catch (\Exception|\Throwable $e) {
+		catch (\Throwable $e) {
 			return ['success' => false, 'message' => $e->getMessage(), 'data' => null];
 		}
 	}
@@ -191,7 +191,7 @@ class Migration extends BaseInstances {
 			$eventManager->addEventListener(Events::loadClassMetadata, $tablePrefix);
 			$eventManager->addEventSubscriber(new MigrationListener());
 
-			$ormConfig  = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
+			$ormConfig  = ORMSetup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 			$connection = DriverManager::getConnection($connectionParams);
 
 			$this->entityManager = new EntityManager($connection, $ormConfig, $eventManager);
@@ -226,7 +226,7 @@ class Migration extends BaseInstances {
 			$this->cli()->doRun($input, $output);
 			return ['success' => true, 'message' => 'Sync metadata successfully!', 'data' => $output->fetch()];
 		}
-		catch (\Exception|\Throwable $e) {
+		catch (\Throwable $e) {
 			return ['success' => false, 'message' => $e->getMessage(), 'data' => null];
 		}
 	}
@@ -258,7 +258,7 @@ class Migration extends BaseInstances {
 				try {
 					$databaseTableName = $this->getEntityManager()->getClassMetadata($databaseTableClass)->getTableName();
 				}
-				catch (\Exception $e) {
+				catch (\Throwable $e) {
 					$databaseTableName = null; // $databaseTableClass;
 					$this->funcs->_debug($e->getMessage());
 				}
@@ -271,8 +271,8 @@ class Migration extends BaseInstances {
 				try {
 					$joinTables = $this->getEntityManager()->getClassMetadata($databaseTableClass)->getAssociationMappings();
 					foreach ($joinTables as $joinTable) {
-						if (!empty($joinTable?->joinTable?->name)) {
-							$joinTableName = $joinTable?->joinTable?->name ?? null;
+						if (isset($joinTable['joinTable']['name'])) {
+							$joinTableName = $joinTable['joinTable']['name'];
 							if ($joinTableName) {
 								$joinTableName           = preg_replace('/^' . $this->funcs->_getDBTablePrefix() . '/iu', '', $joinTableName);
 								$definedDatabaseTables[] = $joinTableName;
@@ -280,7 +280,7 @@ class Migration extends BaseInstances {
 						}
 					}
 				}
-				catch (\Exception $e) {
+				catch (\Throwable $e) {
 					$this->funcs->_debug($e->getMessage());
 				}
 			}
@@ -316,7 +316,7 @@ class Migration extends BaseInstances {
 							$definedDatabaseTables[] = $createTableName;
 						}
 					}
-					catch (\Exception $e) {
+					catch (\Throwable $e) {
 					}
 				}
 			}
