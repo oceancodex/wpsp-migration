@@ -8,7 +8,7 @@
 	"require": {
 		"php": "^7.4",
 		"oceancodex/wpsp-orm": "^7.4.0",
-		"doctrine/annotations": "^2.0.2",
+		"doctrine/annotations": "^1.14.4",
 		"doctrine/doctrine-migrations-bundle": "^3.5.0"
 	},
 	"config": {

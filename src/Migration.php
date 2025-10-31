@@ -191,6 +191,7 @@ class Migration extends BaseInstances {
 			$eventManager->addEventListener(Events::loadClassMetadata, $tablePrefix);
 			$eventManager->addEventSubscriber(new MigrationListener());
 
+			// PHP 7.4
 			$ormConfig  = ORMSetup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 			$connection = DriverManager::getConnection($connectionParams);
 
