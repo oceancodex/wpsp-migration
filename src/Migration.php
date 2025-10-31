@@ -62,6 +62,7 @@ class Migration extends BaseInstances {
 		$globalMigration = $globalMigration . '_migration';
 		global ${$globalMigration};
 		${$globalMigration} = $this;
+		return $this;
 	}
 
 	/*
