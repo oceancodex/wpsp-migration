@@ -57,6 +57,11 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
+	public function set($name, $value) {
+		$this->{$name} = $value;
+		return $this;
+	}
+
 	public function global() {
 		$globalMigration = $this->funcs->_getAppShortName();
 		$globalMigration = $globalMigration . '_migration';
@@ -358,13 +363,19 @@ class Migration extends BaseInstances {
 
 	public function checkAllDatabaseTableExists() {
 		$definedDatabaseTables   = $this->getDefinedDatabaseTables();
+		$schemaBuilder           = $this->eloquent ? $this->eloquent->getCapsule()->getDatabaseManager()->getSchemaBuilder() : null;
 		$allDatabaseTablesExists = true;
-		foreach ($definedDatabaseTables as $definedDatabaseTable) {
-			$databaseTableExists = $this->eloquent->getCapsule()->getDatabaseManager()->getSchemaBuilder()->hasTable($definedDatabaseTable);
-			if (!$databaseTableExists) {
-				$allDatabaseTablesExists = false;
-				break;
+		if ($schemaBuilder) {
+			foreach ($definedDatabaseTables as $definedDatabaseTable) {
+				$databaseTableExists = $schemaBuilder->hasTable($definedDatabaseTable);
+				if (!$databaseTableExists) {
+					$allDatabaseTablesExists = false;
+					break;
+				}
 			}
+		}
+		else {
+			$allDatabaseTablesExists = false;
 		}
 		return ['result' => $allDatabaseTablesExists, 'type' => 'check_all_database_table_exists'];
 	}
