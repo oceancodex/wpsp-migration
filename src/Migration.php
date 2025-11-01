@@ -57,11 +57,17 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
+	public function set($name, $value) {
+		$this->{$name} = $value;
+		return $this;
+	}
+
 	public function global() {
 		$globalMigration = $this->funcs->_getAppShortName();
 		$globalMigration = $globalMigration . '_migration';
 		global ${$globalMigration};
 		${$globalMigration} = $this;
+		return $this;
 	}
 
 	/*
@@ -191,7 +197,8 @@ class Migration extends BaseInstances {
 			$eventManager->addEventListener(Events::loadClassMetadata, $tablePrefix);
 			$eventManager->addEventSubscriber(new MigrationListener());
 
-			$ormConfig  = ORMSetup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+			// PHP 8.1+
+			$ormConfig  = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
 			$connection = DriverManager::getConnection($connectionParams);
 
 			$this->entityManager = new EntityManager($connection, $ormConfig, $eventManager);
@@ -271,8 +278,8 @@ class Migration extends BaseInstances {
 				try {
 					$joinTables = $this->getEntityManager()->getClassMetadata($databaseTableClass)->getAssociationMappings();
 					foreach ($joinTables as $joinTable) {
-						if (isset($joinTable['joinTable']['name'])) {
-							$joinTableName = $joinTable['joinTable']['name'];
+						if (!empty($joinTable?->joinTable?->name)) {
+							$joinTableName = $joinTable?->joinTable?->name ?? null;
 							if ($joinTableName) {
 								$joinTableName           = preg_replace('/^' . $this->funcs->_getDBTablePrefix() . '/iu', '', $joinTableName);
 								$definedDatabaseTables[] = $joinTableName;
@@ -356,13 +363,19 @@ class Migration extends BaseInstances {
 
 	public function checkAllDatabaseTableExists() {
 		$definedDatabaseTables   = $this->getDefinedDatabaseTables();
+		$schemaBuilder           = $this->eloquent ? $this->eloquent->getCapsule()->getDatabaseManager()->getSchemaBuilder() : null;
 		$allDatabaseTablesExists = true;
-		foreach ($definedDatabaseTables as $definedDatabaseTable) {
-			$databaseTableExists = $this->funcs->_getAppEloquent()->getCapsule()->getDatabaseManager()->getSchemaBuilder()->hasTable($definedDatabaseTable);
-			if (!$databaseTableExists) {
-				$allDatabaseTablesExists = false;
-				break;
+		if ($schemaBuilder) {
+			foreach ($definedDatabaseTables as $definedDatabaseTable) {
+				$databaseTableExists = $schemaBuilder->hasTable($definedDatabaseTable);
+				if (!$databaseTableExists) {
+					$allDatabaseTablesExists = false;
+					break;
+				}
 			}
+		}
+		else {
+			$allDatabaseTablesExists = false;
 		}
 		return ['result' => $allDatabaseTablesExists, 'type' => 'check_all_database_table_exists'];
 	}
