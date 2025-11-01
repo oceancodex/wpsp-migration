@@ -57,11 +57,17 @@ class Migration extends BaseInstances {
 	 *
 	 */
 
+	public function set($name, $value) {
+		$this->{$name} = $value;
+		return $this;
+	}
+
 	public function global() {
 		$globalMigration = $this->funcs->_getAppShortName();
 		$globalMigration = $globalMigration . '_migration';
 		global ${$globalMigration};
 		${$globalMigration} = $this;
+		return $this;
 	}
 
 	/*
@@ -191,6 +197,7 @@ class Migration extends BaseInstances {
 			$eventManager->addEventListener(Events::loadClassMetadata, $tablePrefix);
 			$eventManager->addEventSubscriber(new MigrationListener());
 
+			// PHP 7.4, 8.0
 			$ormConfig  = ORMSetup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 			$connection = DriverManager::getConnection($connectionParams);
 
@@ -356,13 +363,19 @@ class Migration extends BaseInstances {
 
 	public function checkAllDatabaseTableExists() {
 		$definedDatabaseTables   = $this->getDefinedDatabaseTables();
+		$schemaBuilder           = $this->eloquent ? $this->eloquent->getCapsule()->getDatabaseManager()->getSchemaBuilder() : null;
 		$allDatabaseTablesExists = true;
-		foreach ($definedDatabaseTables as $definedDatabaseTable) {
-			$databaseTableExists = $this->funcs->_getAppEloquent()->getCapsule()->getDatabaseManager()->getSchemaBuilder()->hasTable($definedDatabaseTable);
-			if (!$databaseTableExists) {
-				$allDatabaseTablesExists = false;
-				break;
+		if ($schemaBuilder) {
+			foreach ($definedDatabaseTables as $definedDatabaseTable) {
+				$databaseTableExists = $schemaBuilder->hasTable($definedDatabaseTable);
+				if (!$databaseTableExists) {
+					$allDatabaseTablesExists = false;
+					break;
+				}
 			}
+		}
+		else {
+			$allDatabaseTablesExists = false;
 		}
 		return ['result' => $allDatabaseTablesExists, 'type' => 'check_all_database_table_exists'];
 	}
