@@ -363,7 +363,7 @@ class Migration extends BaseInstances {
 
 	public function checkAllDatabaseTableExists() {
 		$definedDatabaseTables   = $this->getDefinedDatabaseTables();
-		$schemaBuilder           = $this->eloquent ? $this->eloquent->getCapsule()->getDatabaseManager()->getSchemaBuilder() : null;
+		$schemaBuilder           = $this->funcs->getEloquent()->getCapsule()->getDatabaseManager()->getSchemaBuilder() ?? null;
 		$allDatabaseTablesExists = true;
 		if ($schemaBuilder) {
 			foreach ($definedDatabaseTables as $definedDatabaseTable) {
